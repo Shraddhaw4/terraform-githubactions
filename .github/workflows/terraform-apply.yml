@@ -1,9 +1,9 @@
 name: Terraform Apply
 
 on:
-  push:
-    branches:
-      - master
+  # push:
+  #   branches:
+  #     - master
   workflow_dispatch:
     
 
@@ -37,8 +37,15 @@ jobs:
       - name: Terraform validate
         run: terraform validate
 
-      - name: Terraform Plan
-        run: terraform plan -out=tfplan
+      # - name: Terraform Plan
+      #   run: terraform plan -out=tfplan
+
+      - name: Download Terraform Plan
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan
+          path: tfplan
+          github-token: ${{ github.token }}
 
       - name: Terraform apply
         # if: github.ref == 'refs/heads/main
