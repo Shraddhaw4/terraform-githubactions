@@ -40,3 +40,50 @@ resource "aws_iam_policy_attachment" "pt" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
   roles = [ aws_iam_role.test-role.name ]
 }
+
+resource "aws_s3_bucket" "pyspark-data" {
+  bucket = "shraddha-pyspark-data"
+}
+
+resource "aws_s3_object" "folder_cust" {
+  bucket = aws_s3_bucket.pyspark-data.id
+  key    = "customers/customers.csv"
+  source = "pyspark-glue-tutorial-main/customers/customers.csv"
+}
+
+resource "aws_s3_object" "folder_emp" {
+  bucket = aws_s3_bucket.pyspark-data.id
+  key    = "employees/employees.csv"
+  source = "pyspark-glue-tutorial-main/employees/employees.csv"
+}
+
+resource "aws_s3_object" "folder_orders" {
+  bucket = aws_s3_bucket.pyspark-data.id
+  key    = "orders/orders.csv"
+  source = "pyspark-glue-tutorial-main/orders/orders.csv"
+}
+
+resource "aws_glue_catalog_database" "pyspark_db" {
+  name        = "pyspark_tutorial_db"
+  description = "This database contains the tables for the PySpark tutorial"
+}
+
+resource "aws_glue_crawler" "cust-crawler" {
+  database_name = aws_glue_catalog_database.pyspark_db.name
+  name          = "custcrawler"
+  role          = data.aws_iam_role.glue-role.arn
+
+  s3_target {
+    path = "s3://${aws_s3_bucket.pyspark-data.bucket}/customers/"
+  }
+}
+
+resource "aws_glue_crawler" "order-crawler" {
+  database_name = aws_glue_catalog_database.pyspark_db.name
+  name          = "ordercrawler"
+  role          = data.aws_iam_role.glue-role.arn
+
+  s3_target {
+    path = "s3://${aws_s3_bucket.pyspark-data.bucket}/orders/"
+  }
+}
