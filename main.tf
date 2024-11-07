@@ -91,3 +91,9 @@ resource "aws_glue_crawler" "order-crawler" {
     path = "s3://${data.aws_s3_bucket.pyspark-data.bucket}/orders/"
   }
 }
+
+resource "aws_s3_object" "folder_jobscripts" {
+  bucket = data.aws_s3_bucket.pyspark-data.id
+  key    = "glue-job-scripts/gluescript1.py"
+  source = "gitterglue/gluescript1.py"
+}
