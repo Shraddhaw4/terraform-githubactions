@@ -110,8 +110,8 @@ resource "aws_glue_job" "gluejob1" {
   command {
     script_location = "s3://${data.aws_s3_bucket.pyspark-data.bucket}/glue-job-scripts/gluescript1.py"
   }
-  #number_of_workers = 2
-  #worker_type  = "G.1X"
+  number_of_workers = 2
+  worker_type  = "G.1X"
   default_arguments = {
     "--job-language"                     = "python"
     "--continuous-log-logGroup"          = aws_cloudwatch_log_group.example.name
