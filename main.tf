@@ -97,3 +97,12 @@ resource "aws_s3_object" "folder_jobscripts" {
   key    = "glue-job-scripts/gluescript1.py"
   source = "gluescript1.py"
 }
+
+resource "aws_glue_job" "gluejob1" {
+  name     = "test-job"
+  role_arn = data.aws_iam_role.glue-role.arn
+
+  command {
+    script_location = "s3://${data.aws_s3_bucket.pyspark-data.bucket}/glue-job-scripts/gluescript1.py"
+  }
+}
