@@ -111,4 +111,19 @@ resource "aws_glue_job" "gluejob1" {
     script_location = "s3://${data.aws_s3_bucket.pyspark-data.bucket}/glue-job-scripts/gluescript1.py"
   }
   number_of_workers = 2
+  worker_type  = "G.1X"
+  default_arguments = {
+    "--job-language"                     = "python"
+    "--continuous-log-logGroup"          = aws_cloudwatch_log_group.example.name
+    "--enable-continuous-cloudwatch-log" = "true"
+    "--enable-continuous-log-filter"     = "true"
+    "--enable-metrics"                   = "true"
+    "--enable-spark-ui"                  = true
+    "--spark-event-logs-path"            = "s3://aws-glue-assets-529469281996-ap-south-1/sparkHistoryLogs/"
+    "--enable-job-insights"              = "true"
+    "--enable-observability-metrics"     = "true"
+    "--enable-glue-datacatalog"          = "true"
+    "--job-bookmark-option"              = "job-bookmark-disable"
+    "--TempDir"                          = "s3://aws-glue-assets-529469281996-ap-south-1/temporary/"
+  }
 }
